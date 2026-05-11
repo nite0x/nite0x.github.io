@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nite0x</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #00ff41;
+    --green-dim: #00cc33;
+    --green-muted: #005515;
+    --bg: #0a0a0a;
+    --bg2: #0f0f0f;
+    --text: #c8c8c8;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .prompt-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .prompt-symbol {
+    color: var(--green);
+    font-size: 13px;
+    opacity: 0.6;
+  }
+
+  .prompt-path {
+    color: var(--green-dim);
+    font-size: 13px;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .name {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .tagline {
+    color: var(--text);
+    font-size: 13px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.4s;
+  }
+
+  .tagline span {
+    color: var(--green-dim);
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--green-muted);
+    margin: 2rem 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.5s;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.6s;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    position: relative;
+  }
+
+  .link-item::before {
+    content: '→';
+    color: var(--green-muted);
+    transition: color 0.2s, transform 0.2s;
+    font-size: 12px;
+  }
+
+  .link-item:hover {
+    color: var(--green);
+  }
+
+  .link-item:hover::before {
+    color: var(--green);
+    transform: translateX(4px);
+  }
+
+  .link-label {
+    color: var(--green-dim);
+    min-width: 80px;
+    font-size: 12px;
+  }
+
+  .footer {
+    margin-top: 3rem;
+    font-size: 11px;
+    color: var(--green-muted);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.9s;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .scanline {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div class="container">
+  <div class="prompt-line">
+    <span class="prompt-symbol">visitor@nite0x.com</span>
+    <span class="prompt-path">~ $</span>
+    <span class="cursor"></span>
+  </div>
+
+  <h1 class="name">nite0x</h1>
+
+  <p class="tagline">
+    <span>//</span> full-stack developer. building things at night.
+  </p>
+
+  <hr class="divider">
+
+  <div class="links">
+    <a class="link-item" href="https://github.com/nite0x" target="_blank" rel="noopener">
+      <span class="link-label">github</span>
+      github.com/nite0x
+    </a>
+    <a class="link-item" href="mailto:hi@nite0x.com">
+      <span class="link-label">email</span>
+      hi@nite0x.com
+    </a>
+  </div>
+
+  <p class="footer">// last updated 2026 &nbsp;·&nbsp; nite0x.com</p>
+</div>
+</body>
+</html>
