@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porter — Local Dev Environment, Finally Visible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07070d;
+  --bg2: #0d0d18;
+  --bg3: #12121f;
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+  --text: #f0f0f5;
+  --text-muted: rgba(240,240,245,0.45);
+  --text-dim: rgba(240,240,245,0.25);
+  --accent: #4f8ef7;
+  --accent-dim: rgba(79,142,247,0.15);
+  --accent-border: rgba(79,142,247,0.3);
+  --green: #3dd68c;
+  --green-dim: rgba(61,214,140,0.12);
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #07070d;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Grid bg ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 60px;
+  background: rgba(7,7,13,0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px var(--green); }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--mono);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  background: var(--accent);
+  color: #fff !important;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  transition: opacity 0.2s !important;
+}
+.nav-cta:hover { opacity: 0.85; }
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 800px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(79,142,247,0.1) 0%, transparent 65%);
+  top: 10%; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.1s ease forwards;
+}
+
+.eyebrow-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: breathe 2s ease-in-out infinite;
+}
+
+h1 {
+  font-family: var(--sans);
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  max-width: 780px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.2s ease forwards;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-muted);
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.35s ease forwards;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 72px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.5s ease forwards;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+  font-family: var(--sans);
+}
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 13px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border-bright);
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+  font-family: var(--mono);
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+/* ── Terminal badge ── */
+.terminal-badge {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.terminal-badge span { color: var(--green); }
+
+/* ── App window ── */
+.app-window-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.65s ease forwards;
+}
+
+.app-window {
+  background: #0f0f1c;
+  border-radius: 14px;
+  border: 1px solid var(--border-bright);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(79,142,247,0.08),
+    0 40px 100px rgba(0,0,0,0.7),
+    0 8px 32px rgba(79,142,247,0.06);
+}
+
+.window-bar {
+  background: #0c0c18;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wdot { width: 11px; height: 11px; border-radius: 50%; }
+
+.window-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-left: 8px;
+  flex: 1;
+}
+
+.daemon-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--green-dim);
+  border: 1px solid rgba(61,214,140,0.2);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+}
+
+.window-body { padding: 20px; }
+
+.w-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.w-title {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.w-btn {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.w-section {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.w-count {
+  background: rgba(79,142,247,0.15);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 4px;
+  padding: 1px 7px;
+  color: var(--accent);
+  font-size: 9px;
+}
+
+.svc-list { display: flex; flex-direction: column; gap: 6px; }
+
+.svc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+.svc-row:hover {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+.svc-ico {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.svc-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+}
+
+.svc-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.port-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(79,142,247,0.12);
+  border: 1px solid rgba(79,142,247,0.2);
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: var(--accent);
+}
+
+.open-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.open-tag:hover { background: rgba(255,255,255,0.08); }
+
+/* ── Sections ── */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+.section-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── How it works ── */
+.how {
+  padding: 120px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  max-width: 500px;
+  margin-bottom: 64px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.step {
+  background: var(--bg2);
+  padding: 36px 32px;
+  position: relative;
+}
+
+.step-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+
+.step-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.step h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+.step-code {
+  margin-top: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.step-code .c-green { color: var(--green); }
+.step-code .c-blue { color: var(--accent); }
+.step-code .c-dim { color: var(--text-dim); }
+
+/* ── Features ── */
+.features {
+  padding: 120px 0;
+  border-top: 1px solid var(--border);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.feature-card {
+  background: var(--bg2);
+  padding: 36px 32px;
+}
+
+.feature-card.accent-card {
+  background: linear-gradient(135deg, #0d1628 0%, #0a0f1e 100%);
+  border: none;
+}
+
+.feat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.feat-demo {
+  margin-top: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.feat-demo .row { display: flex; align-items: center; gap: 8px; }
+.feat-demo .dot-green { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.feat-demo .dot-dim { width: 5px; height: 5px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+.feat-demo .name { color: var(--text); flex: 1; }
+.feat-demo .port { color: var(--accent); }
+.feat-demo .meta { color: var(--text-dim); font-size: 10px; }
+
+/* ── MCP callout ── */
+.mcp-callout {
+  margin-top: 1px;
+  background: linear-gradient(135deg, rgba(79,142,247,0.06) 0%, rgba(99,102,241,0.04) 100%);
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  grid-column: 1 / -1;
+}
+
+.mcp-left { flex: 1; }
+.mcp-right { flex: 0 0 380px; }
+
+.mcp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #a78bfa;
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 4px;
+  padding: 3px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.mcp-callout h3 {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.mcp-callout p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 420px;
+}
+
+.chat-demo {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.chat-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+
+.avatar-user { background: rgba(79,142,247,0.2); color: var(--accent); }
+.avatar-ai { background: rgba(167,139,250,0.2); color: #a78bfa; }
+
+.chat-bubble {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-family: var(--sans);
+}
+
+.chat-bubble.ai { color: var(--text); }
+.chat-bubble strong { color: var(--green); font-weight: 500; }
+
+/* ── Waitlist ── */
+.waitlist {
+  padding: 120px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.waitlist h2 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.waitlist p {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+
+.waitlist-form {
+  display: flex;
+  gap: 10px;
+  max-width: 440px;
+  margin: 0 auto 20px;
+}
+
+.waitlist-input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: var(--sans);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.waitlist-input:focus { border-color: var(--accent); }
+.waitlist-input::placeholder { color: var(--text-dim); }
+
+.waitlist-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.waitlist-btn:hover { opacity: 0.85; }
+
+.waitlist-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ── Footer ── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text-muted); }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .steps { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .mcp-callout { flex-direction: column; }
+  .mcp-right { flex: none; width: 100%; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    porter
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">how it works</a></li>
+    <li><a href="#features">features</a></li>
+    <li><a href="#mcp">MCP</a></li>
+    <li><a href="#waitlist" class="nav-cta">get early access</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="eyebrow">
+    <div class="eyebrow-dot"></div>
+    open source · macOS · Linux
+  </div>
+
+  <h1>Your local dev environment,<br><em>finally visible.</em></h1>
+
+  <p class="hero-sub">
+    Porter auto-discovers every service running on your machine. No config. No Procfiles. Just open it and see everything.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#waitlist" class="btn-primary">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Get early access
+    </a>
+    <a href="https://github.com" class="btn-secondary">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C3.69 1 1 3.69 1 7c0 2.65 1.72 4.9 4.1 5.69.3.06.41-.13.41-.29v-1.02c-1.67.36-2.02-.8-2.02-.8-.27-.69-.67-.87-.67-.87-.55-.37.04-.36.04-.36.6.04.92.62.92.62.54.92 1.41.65 1.75.5.05-.39.21-.65.38-.8-1.33-.15-2.73-.67-2.73-2.96 0-.65.23-1.19.62-1.6-.06-.15-.27-.76.06-1.59 0 0 .51-.16 1.67.62A5.8 5.8 0 0 1 7 4.8c.52 0 1.04.07 1.52.2 1.16-.78 1.67-.62 1.67-.62.33.83.12 1.44.06 1.59.38.42.62.95.62 1.6 0 2.3-1.4 2.81-2.74 2.96.22.19.41.56.41 1.13v1.67c0 .16.11.35.41.29C11.28 11.9 13 9.65 13 7c0-3.31-2.69-6-6-6z" fill="currentColor"/></svg>
+      View on GitHub
+    </a>
+  </div>
+
+  <!-- App window -->
+  <div class="app-window-wrap">
+    <div class="app-window">
+      <div class="window-bar">
+        <div class="wdot" style="background:#ff5f57"></div>
+        <div class="wdot" style="background:#febc2e"></div>
+        <div class="wdot" style="background:#28c840"></div>
+        <span class="window-title">Porter</span>
+        <div class="daemon-pill">
+          <div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:breathe 2s infinite"></div>
+          daemon connected
+        </div>
+      </div>
+      <div class="window-body">
+        <div class="w-topbar">
+          <div class="w-title">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="var(--green)"/></svg>
+            Porter
+          </div>
+          <div class="w-btn">+ Add Service</div>
+        </div>
+        <div class="w-section">
+          Discovered
+          <span class="w-count">15 ports</span>
+          <span class="w-count">9 services</span>
+        </div>
+        <div class="svc-list">
+          <div class="svc-row">
+            <div class="svc-ico" style="background:rgba(245,158,11,0.12)">⚡</div>
+            <div class="svc-name">Vite</div>
+            <div class="svc-meta">node · pid 33701</div>
+            <div class="port-tag">:1420</div>
+            <div class="open-tag">Open ↗</div>
+          </div>
+          <div class="svc-row">
+            <div class="svc-ico" style="background:rgba(61,214,140,0.1)">🐘</div>
+            <div class="svc-name">PostgreSQL</div>
+            <div class="svc-meta">com.docker · pid 1369</div>
+            <div class="port-tag">:5432</div>
+            <div class="open-tag" style="opacity:0.3">—</div>
+          </div>
+          <div class="svc-row">
+            <div class="svc-ico" style="background:rgba(167,139,250,0.12)">⬡</div>
+            <div class="svc-name">MCP Inspector</div>
+            <div class="svc-meta">2 processes · 2 ports</div>
+            <div class="port-tag">:6274</div>
+            <div class="port-tag">:6277</div>
+            <div class="open-tag">Open ↗</div>
+          </div>
+          <div class="svc-row">
+            <div class="svc-ico" style="background:rgba(79,142,247,0.1)">◉</div>
+            <div class="svc-name">runtime</div>
+            <div class="svc-meta">pid 77072</div>
+            <div class="port-tag">:4399</div>
+            <div class="open-tag">Open ↗</div>
+          </div>
+          <div class="svc-row" style="opacity:0.45">
+            <div class="svc-ico" style="background:rgba(255,255,255,0.04)">☕</div>
+            <div class="svc-name">java</div>
+            <div class="svc-meta">IntelliJ IDEA · pid 53932</div>
+            <div class="port-tag">:5678</div>
+            <div class="port-tag">:50323</div>
+            <div class="open-tag">Open ↗</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how" id="how">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label">// how it works</div>
+      <h2 class="section-title">Zero config.<br>Install once, forget about it.</h2>
+    </div>
+    <div class="steps fade-in">
+      <div class="step">
+        <div class="step-num">01 —</div>
+        <span class="step-icon">🔌</span>
+        <h3>Install the daemon</h3>
+        <p>A lightweight Go process runs in the background, watching your system's network activity.</p>
+        <div class="step-code">
+          <span class="c-dim">$</span> <span class="c-green">brew install</span> porter-app<br>
+          <span class="c-dim">$</span> <span class="c-green">porter</span> daemon start<br>
+          <span class="c-dim c-green">✓</span> <span class="c-blue">daemon running</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02 —</div>
+        <span class="step-icon">🔍</span>
+        <h3>Auto-discovery kicks in</h3>
+        <p>Porter detects every listening port, maps it to its process, and figures out what's running — automatically.</p>
+        <div class="step-code">
+          <span class="c-dim">scanning ports...</span><br>
+          <span class="c-green">✓</span> Vite <span class="c-blue">:1420</span><br>
+          <span class="c-green">✓</span> PostgreSQL <span class="c-blue">:5432</span><br>
+          <span class="c-green">✓</span> MCP Inspector <span class="c-blue">:6274</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03 —</div>
+        <span class="step-icon">🎯</span>
+        <h3>Open, manage, control</h3>
+        <p>One click to open any service in the browser. Ignore noisy system services. Name things properly.</p>
+        <div class="step-code">
+          <span class="c-dim">porter open</span> <span class="c-blue">3000</span><br>
+          <span class="c-dim">porter ignore</span> <span class="c-blue">7000</span><br>
+          <span class="c-green">→ opening localhost:3000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label">// features</div>
+      <h2 class="section-title">Built for developers<br>who run a lot of stuff.</h2>
+    </div>
+    <div class="feature-grid fade-in">
+      <div class="feature-card">
+        <div class="feat-tag">Auto-discovery</div>
+        <h3>Sees everything running on your machine</h3>
+        <p>Porter scans all listening ports in real-time, identifies the process behind each one, and gives them friendly names. No Procfiles. No manual registration.</p>
+        <div class="feat-demo">
+          <div class="row"><div class="dot-green"></div><span class="name">Vite</span><span class="port">:1420</span></div>
+          <div class="row"><div class="dot-green"></div><span class="name">PostgreSQL</span><span class="port">:5432</span></div>
+          <div class="row"><div class="dot-green"></div><span class="name">Redis</span><span class="port">:6379</span></div>
+          <div class="row"><div class="dot-dim"></div><span class="name" style="color:var(--text-dim)">ControlCenter</span><span class="meta">ignored</span></div>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-tag">Project-aware</div>
+        <h3>Groups services by project automatically</h3>
+        <p>Services launched from the same directory are grouped together. Your frontend, backend, and database show up as one coherent project — not a random list of ports.</p>
+        <div class="feat-demo" style="line-height:2">
+          <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px">~/projects/myapp</div>
+          <div class="row"><div class="dot-green"></div><span class="name">Next.js</span><span class="port">:3000</span></div>
+          <div class="row"><div class="dot-green"></div><span class="name">API server</span><span class="port">:8080</span></div>
+          <div class="row"><div class="dot-green"></div><span class="name">PostgreSQL</span><span class="port">:5432</span></div>
+        </div>
+      </div>
+      <div id="mcp" style="grid-column:1/-1;background:linear-gradient(135deg,#0d1628 0%,#0a0f1e 100%);padding:48px;display:flex;align-items:center;gap:48px;">
+        <div style="flex:1;min-width:0;">
+          <div class="mcp-tag">MCP server</div>
+          <h3 style="font-size:24px;font-weight:500;letter-spacing:-0.02em;margin-bottom:12px;">Let Claude see your dev environment</h3>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.7;font-weight:300;max-width:400px;">Porter ships with a built-in MCP server. Connect it to Claude and ask natural questions about what's running — or let AI help you debug, restart, or manage services.</p>
+        </div>
+        <div style="flex:0 0 420px;">
+          <div class="chat-demo">
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-user">U</div>
+              <div class="chat-bubble">What services are currently running on my machine?</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-ai">C</div>
+              <div class="chat-bubble ai">I can see <strong>9 services</strong> running. Your main project looks like it's on port 3000 (Next.js) with an API server on 8080 and PostgreSQL on 5432. There's also an MCP Inspector on 6274 and 6277.</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-user">U</div>
+              <div class="chat-bubble">Which ones have been running longest?</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-ai">C</div>
+              <div class="chat-bubble ai">PostgreSQL has been up for <strong>3 days</strong>. The Next.js dev server started <strong>2 hours ago</strong>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Waitlist -->
+<section class="waitlist" id="waitlist">
+  <div class="section-inner">
+    <div class="fade-in">
+      <h2>Stop wondering what's running.<br>Start shipping.</h2>
+      <p>Join the early access list. Free and open source.</p>
+      <div class="waitlist-form">
+        <input type="email" class="waitlist-input" placeholder="your@email.com" id="email-input">
+        <button class="waitlist-btn" id="waitlist-btn" onclick="handleSubmit()">Get access</button>
+      </div>
+      <div class="waitlist-note" id="waitlist-note">No spam. Unsubscribe anytime.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">
+    <div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>
+    porter — local dev visibility
+  </div>
+  <div class="footer-links">
+    <a href="#">GitHub</a>
+    <a href="#">Docs</a>
+    <a href="#">Changelog</a>
+  </div>
+</footer>
+
+<script>
+// Scroll fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Waitlist
+async function handleSubmit() {
+  const input = document.getElementById('email-input');
+  const note = document.getElementById('waitlist-note');
+  const btn = document.getElementById('waitlist-btn');
+  const email = input.value.trim();
+
+  if (!email || !email.includes('@')) {
+    note.textContent = 'Please enter a valid email.';
+    note.style.color = '#f87171';
+    return;
+  }
+
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('https://app.loops.so/api/v1/contacts/create', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer 48aa264a16d3a00c1b5350878da774d4',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, source: 'waitlist' })
+    });
+
+    if (res.ok) {
+      note.textContent = '✓ You\'re on the list. We\'ll be in touch.';
+      note.style.color = 'var(--green)';
+      input.value = '';
+    } else {
+      throw new Error();
+    }
+  } catch {
+    note.textContent = 'Something went wrong. Please try again.';
+    note.style.color = '#f87171';
+  } finally {
+    btn.textContent = 'Get access';
+    btn.disabled = false;
+  }
+}
+
+// Enter key on email
+document.getElementById('email-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSubmit();
+});
+</script>
+</body>
+</html>
